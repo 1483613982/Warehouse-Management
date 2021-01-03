@@ -63,3 +63,15 @@ div:focus {
 .app-container {
   padding: 20px;
 }
+
+.el-form{
+  width: 100%;
+  height: auto;
+
+  .el-form-inline{
+    display: inline-block;
+  }
+  .el-form-block{
+    display: block;
+  }
+}

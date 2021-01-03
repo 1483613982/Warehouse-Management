@@ -3,11 +3,14 @@ import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
 const getDefaultState = () => {
-  return {
+  const defaultState = {
     token: getToken(),
     name: '',
-    avatar: ''
+    avatar: '',
+    rank: null
   }
+  const state = sessionStorage.getItem('user_state') != null ? JSON.parse(sessionStorage.getItem('user_state')) : defaultState
+  return state
 }
 
 const state = getDefaultState()
@@ -24,6 +27,9 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
+  },
+  SET_RANK: (state, rank) => {
+    state.rank = rank
   }
 }
 
@@ -34,11 +40,17 @@ const actions = {
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
         const { data } = response
+        console.log(response)
         commit('SET_TOKEN', data.token)
+        commit('SET_NAME', username)
         setToken(data.token)
+        commit('SET_RANK', data.userInfo.rank)
+        commit('SET_AVATAR', data.userInfo.avatar)
+        sessionStorage.setItem('user_state', JSON.stringify(state))
         resolve()
       }).catch(error => {
         reject(error)
+        console.log(error)
       })
     })
   },
@@ -46,11 +58,11 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
+      getInfo(state.name).then(response => {
         const { data } = response
-
+        debugger
         if (!data) {
-          return reject('Verification failed, please Login again.')
+          return reject('验证失败，请重新登录。')
         }
 
         const { name, avatar } = data
