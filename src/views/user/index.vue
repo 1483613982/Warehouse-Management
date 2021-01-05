@@ -4,20 +4,20 @@
       <div class="search-box">
         <el-input v-model="searchKey" placeholder="请输入用户名" prefix-icon="el-icon-search" />
       </div>
-      <el-button type="primary">搜索</el-button>
+      <el-button type="primary" @click="search">搜索</el-button>
       <el-button type="primary" @click="adduser">添加用户</el-button>
     </div>
     <el-table :data="userList" stripe style="width: 100%">
       <el-table-column prop="id" label="用户编号" width="100" />
       <el-table-column label="头像" width="180">
-        <template scope="scope">
+        <template slot-scope="scope">
           <el-image style="width: 80px; height: 80px" :src="scope.row.avatar" fit="fill" />
         </template>
       </el-table-column>
       <el-table-column prop="username" label="用户名" width="180" />
       <el-table-column prop="rank" label="权限" width="180" :formatter="rankFormatter" />
       <el-table-column prop="create_time" label="创建时间" width="180" :formatter="dateFormatter" />
-      <el-table-column prop="update_time" label="修改时间" :formatter="dateFormatter" />
+      <el-table-column prop="update_time" label="修改时间" min-width="180" :formatter="dateFormatter" />
       <el-table-column fixed="right" label="操作" width="200">
         <template slot-scope="scope">
           <el-button type="primary" plain size="small" @click="editbtn(scope.$index, scope.row)">编辑</el-button>
@@ -76,7 +76,7 @@
 </template>
 
 <script>
-import { getUserList, updateUser, addUser, delUser } from '@/api/user'
+import { getUserList, updateUser, addUser, delUser, findUser } from '@/api/user'
 export default {
   data() {
     return {
@@ -216,7 +216,6 @@ export default {
         update_time: this.$moment().unix(),
         username: this.user.username
       }
-      debugger
       addUser(params).then((res) => {
         console.log(res)
         if (res.code === 200) {
@@ -233,6 +232,22 @@ export default {
           })
         }
       })
+    },
+    // 搜索用户
+    search() {
+      if (this.searchKey.trim() === '') {
+        this.getlist()
+      } else {
+        findUser(this.searchKey)
+          .then((res) => {
+            if (res.code === 200) {
+              this.userList = res.data
+            }
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+      }
     }
   }
 }

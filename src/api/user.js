@@ -16,6 +16,14 @@ export function getInfo(username) {
   })
 }
 
+export function findUser(username) {
+  return request({
+    url: 'api/User/findUser',
+    method: 'get',
+    params: { username }
+  })
+}
+
 export function logout() {
   return request({
     url: 'api/User/logOut',

@@ -15,15 +15,15 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'Dashboard',
-  computed: {
-    ...mapGetters(['name'])
-  },
   data() {
     return {
       frontEnd: 'Vue + Element-UI',
       backEnd: 'Spring boot + Mybatis + MySQL',
       author: '小雷'
     }
+  },
+  computed: {
+    ...mapGetters(['name'])
   }
 }
 </script>

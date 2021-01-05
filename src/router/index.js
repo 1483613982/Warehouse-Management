@@ -68,110 +68,87 @@ export const constantRoutes = [
   },
 
   {
-    path: '/example',
+    path: '/warehouse',
     component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'el-icon-s-help' },
+    redirect: '/warehouse/index',
+    name: 'warehouse',
+    meta: { title: '仓库管理', icon: 'warehouse' },
     children: [
       {
         path: 'table',
         name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
+        component: () => import('@/views/warehouse/index'),
+        meta: { title: '货架管理', icon: 'frame' }
       },
       {
         path: 'tree',
         name: 'Tree',
         component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
+        meta: { title: '商品管理', icon: 'goods' }
+      },
+      {
+        path: 'checkout',
+        name: 'Checkout',
+        component: () => import('@/views/tree/index'),
+        meta: { title: '出库详情', icon: 'goods' }
+      },
+      {
+        path: 'add',
+        name: 'Add',
+        component: () => import('@/views/tree/index'),
+        meta: { title: '入库详情', icon: 'goods' }
+      },
+      {
+        path: 'stock',
+        name: 'Stock',
+        component: () => import('@/views/tree/index'),
+        meta: { title: '库存详情', icon: 'goods' }
       }
     ]
   },
 
   {
-    path: '/form',
+    path: '/order',
     component: Layout,
+    redirect: '/order/index',
+    name: 'order',
+    meta: { title: '订单管理', icon: 'warehouse' },
     children: [
       {
         path: 'index',
-        name: 'Form',
+        name: 'newOrder',
         component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
-      }
-    ]
-  },
-
-  {
-    path: '/nested',
-    component: Layout,
-    redirect: '/nested/menu1',
-    name: 'Nested',
-    meta: {
-      title: 'Nested',
-      icon: 'nested'
-    },
-    children: [
-      {
-        path: 'menu1',
-        component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: 'Menu1' },
-        children: [
-          {
-            path: 'menu1-1',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'Menu1-1',
-            meta: { title: 'Menu1-1' }
-          },
-          {
-            path: 'menu1-2',
-            component: () => import('@/views/nested/menu1/menu1-2'),
-            name: 'Menu1-2',
-            meta: { title: 'Menu1-2' },
-            children: [
-              {
-                path: 'menu1-2-1',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-                name: 'Menu1-2-1',
-                meta: { title: 'Menu1-2-1' }
-              },
-              {
-                path: 'menu1-2-2',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-                name: 'Menu1-2-2',
-                meta: { title: 'Menu1-2-2' }
-              }
-            ]
-          },
-          {
-            path: 'menu1-3',
-            component: () => import('@/views/nested/menu1/menu1-3'),
-            name: 'Menu1-3',
-            meta: { title: 'Menu1-3' }
-          }
-        ]
+        meta: { title: '新增订单', icon: 'form' }
       },
       {
-        path: 'menu2',
-        component: () => import('@/views/nested/menu2/index'),
-        name: 'Menu2',
-        meta: { title: 'menu2' }
+        path: 'historyOrder',
+        name: 'historyOrder',
+        component: () => import('@/views/form/index'),
+        meta: { title: '历史订单', icon: 'form' }
       }
     ]
   },
-
   {
-    path: 'external-link',
+    path: '/setting',
     component: Layout,
+    redirect: '/setting/index',
+    name: 'Setting',
+    meta: { title: '系统管理', icon: 'warehouse' },
     children: [
       {
-        path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-        meta: { title: 'External Link', icon: 'link' }
+        path: 'index',
+        name: 'newOrder',
+        component: () => import('@/views/form/index'),
+        meta: { title: '新增订单', icon: 'form' }
+      },
+      {
+        path: 'historyOrder',
+        name: 'historyOrder',
+        component: () => import('@/views/form/index'),
+        meta: { title: '历史订单', icon: 'form' }
       }
     ]
   },
-
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
