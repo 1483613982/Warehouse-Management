@@ -1,5 +1,5 @@
 <template>
-  <div class="content">
+  <div class="app-container">
     <div class="bar">
       <div class="search-box">
         <el-input v-model="searchKey" placeholder="请输入用户名" prefix-icon="el-icon-search" />
@@ -37,7 +37,7 @@
         <el-form ref="form" class="el-form" :model="user" label-width="80px">
           <div class="el-form-block">
             <el-form-item label="用户头像" class="el-form-inline">
-              <el-image style="width: 100px; height: 100px" :src="user.avatar" fit="fit" />
+              <el-image style="width: 100px; height: 100px" :src="user.avatar" fit="fit" @click="uploadimg" />
             </el-form-item>
           </div>
           <div class="el-form-block">
@@ -123,9 +123,9 @@ export default {
     dateFormatter(row, column) {
       if (column.property === 'create_time') {
         // const createdate = row.create_time
-        return this.$moment(row.create_time).format('YYYY-MM-DD hh-mm-ss')
+        return this.$moment(row.create_time).format('YYYY-MM-DD HH:mm:ss')
       } else if (column.property === 'update_time') {
-        return this.$moment(row.update_time).format('YYYY-MM-DD hh-mm-ss')
+        return this.$moment(row.update_time).format('YYYY-MM-DD HH:mm:ss')
       }
     },
     // 编辑按钮点击事件
@@ -135,6 +135,10 @@ export default {
       this.user = row
       this.dialogType = 'edit'
       this.user.password = '密码不可查看'
+    },
+    // 上传图片
+    uploadimg() {
+
     },
     // 保存编辑
     saveedit() {
@@ -254,7 +258,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.content {
+.app-container {
   .bar {
     width: 100%;
     padding: 10px;

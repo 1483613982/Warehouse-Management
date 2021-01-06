@@ -197,7 +197,7 @@ $light_gray: #eee;
   min-height: 100%;
   width: 100%;
   background-color: $bg;
-  background-image: url('../../assets/images/login-bg.jpg');
+  // background-image: url('../../assets/images/login-bg.jpg');
   background-position: center;
   background-size: 100% 100%;
   background-repeat: no-repeat;

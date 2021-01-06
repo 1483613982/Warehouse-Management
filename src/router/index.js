@@ -55,18 +55,25 @@ export const constantRoutes = [
     }]
   },
   {
-    path: '/user',
+    path: '/base',
     component: Layout,
+    name: 'order',
+    meta: { title: '基础管理', icon: 'warehouse' },
     children: [
       {
         path: 'index',
-        name: 'User',
-        component: () => import('@/views/user/index'),
-        meta: { title: '用户管理', icon: 'userManage' }
+        name: 'newOrder',
+        component: () => import('@/views/supplier/index'),
+        meta: { title: '供应商管理', icon: 'form' }
+      },
+      {
+        path: 'historyOrder',
+        name: 'historyOrder',
+        component: () => import('@/views/supplier/index'),
+        meta: { title: '客户管理', icon: 'form' }
       }
     ]
   },
-
   {
     path: '/warehouse',
     component: Layout,
@@ -117,14 +124,26 @@ export const constantRoutes = [
       {
         path: 'index',
         name: 'newOrder',
-        component: () => import('@/views/form/index'),
+        component: () => import('@/views/supplier/index'),
         meta: { title: '新增订单', icon: 'form' }
       },
       {
         path: 'historyOrder',
         name: 'historyOrder',
-        component: () => import('@/views/form/index'),
+        component: () => import('@/views/supplier/index'),
         meta: { title: '历史订单', icon: 'form' }
+      }
+    ]
+  },
+  {
+    path: '/user',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'User',
+        component: () => import('@/views/user/index'),
+        meta: { title: '用户管理', icon: 'userManage' }
       }
     ]
   },
@@ -138,13 +157,13 @@ export const constantRoutes = [
       {
         path: 'index',
         name: 'newOrder',
-        component: () => import('@/views/form/index'),
+        component: () => import('@/views/supplier/index'),
         meta: { title: '新增订单', icon: 'form' }
       },
       {
         path: 'historyOrder',
         name: 'historyOrder',
-        component: () => import('@/views/form/index'),
+        component: () => import('@/views/supplier/index'),
         meta: { title: '历史订单', icon: 'form' }
       }
     ]
