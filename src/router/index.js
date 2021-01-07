@@ -65,13 +65,13 @@ export const constantRoutes = [
         name: 'newOrder',
         component: () => import('@/views/supplier/index'),
         meta: { title: '供应商管理', icon: 'form' }
-      },
-      {
-        path: 'historyOrder',
-        name: 'historyOrder',
-        component: () => import('@/views/supplier/index'),
-        meta: { title: '客户管理', icon: 'form' }
       }
+      // {
+      //   path: 'historyOrder',
+      //   name: 'historyOrder',
+      //   component: () => import('@/views/supplier/index'),
+      //   meta: { title: '客户管理', icon: 'form' }
+      // }
     ]
   },
   {

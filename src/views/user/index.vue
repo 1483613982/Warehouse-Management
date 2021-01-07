@@ -7,7 +7,7 @@
       <el-button type="primary" @click="search">搜索</el-button>
       <el-button type="primary" @click="adduser">添加用户</el-button>
     </div>
-    <el-table :data="userList" stripe style="width: 100%">
+    <el-table :data="userList" stripe style="width: 100%" border :height="tableHeight">
       <el-table-column prop="id" label="用户编号" width="100" />
       <el-table-column label="头像" width="180">
         <template slot-scope="scope">
@@ -31,13 +31,31 @@
         </template>
       </el-table-column>
     </el-table>
-
+    <el-pagination
+      :current-page="currentPage"
+      :page-sizes="[10, 20, 50, 100]"
+      :page-size="pageSize"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
     <el-dialog title="编辑" :visible.sync="editVisible" width="50%">
       <div class="edit-box">
         <el-form ref="form" class="el-form" :model="user" label-width="80px">
           <div class="el-form-block">
             <el-form-item label="用户头像" class="el-form-inline">
-              <el-image style="width: 100px; height: 100px" :src="user.avatar" fit="fit" @click="uploadimg" />
+              <el-upload
+                class="avatar-uploader"
+                :headers="{'token':token}"
+                action="http://localhost:8080/imgUpload"
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload"
+              >
+                <img v-if="user.avatar" :src="user.avatar" class="avatar">
+                <i v-else class="el-icon-plus avatar-uploader-icon" />
+              </el-upload>
             </el-form-item>
           </div>
           <div class="el-form-block">
@@ -67,7 +85,7 @@
         </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="editVisible = false">取 消</el-button>
+        <el-button @click="cancel">取 消</el-button>
         <el-button v-if="dialogType == 'edit'" type="primary" @click="saveedit">保存修改</el-button>
         <el-button v-else type="primary" @click="saveuser">添加</el-button>
       </span>
@@ -76,7 +94,8 @@
 </template>
 
 <script>
-import { getUserList, updateUser, addUser, delUser, findUser } from '@/api/user'
+import { getPageUser, updateUser, addUser, delUser, findUser, getCount } from '@/api/user'
+import { getToken } from '@/utils/auth'
 export default {
   data() {
     return {
@@ -84,8 +103,22 @@ export default {
       searchKey: '',
       editVisible: false,
       dialogType: 'add', // edit 编辑    add 添加
-      user: {}
+      user: {},
+      total: 0,
+      currentPage: 1,
+      pageSize: 10,
+      token: getToken(),
+      tableHeight: 0
+
     }
+  },
+  created() {
+    this.tableHeight = document.documentElement.clientHeight - 200
+    getCount().then(res => {
+      if (res.code === 200) {
+        this.total = res.data
+      }
+    })
   },
   mounted() {
     this.getlist()
@@ -93,7 +126,7 @@ export default {
   methods: {
     // 获得用户列表
     getlist() {
-      getUserList().then((res) => {
+      getPageUser(this.currentPage, this.pageSize).then((res) => {
         this.userList = res.data
       })
     },
@@ -128,6 +161,14 @@ export default {
         return this.$moment(row.update_time).format('YYYY-MM-DD HH:mm:ss')
       }
     },
+    handleSizeChange(val) {
+      this.pageSize = val
+      this.getlist()
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val
+      this.getlist()
+    },
     // 编辑按钮点击事件
     editbtn(index, row) {
       console.log(index, row)
@@ -137,8 +178,25 @@ export default {
       this.user.password = '密码不可查看'
     },
     // 上传图片
-    uploadimg() {
+    handleAvatarSuccess(res, file) {
+      console.log(res, file)
+      if (res.code === 200) {
+        this.user.avatar = res.data
+      } else {
+        this.$message({
+          showClose: true,
+          message: res.data,
+          type: 'error'
+        })
+      }
+    },
 
+    beforeAvatarUpload(file) {
+      console.log(file)
+    },
+    cancel() {
+      this.editVisible = false
+      this.getlist()
     },
     // 保存编辑
     saveedit() {
@@ -165,7 +223,9 @@ export default {
             }
           })
         })
-        .catch(() => {})
+        .catch(() => {
+          this.getlist()
+        })
     },
     // 删除用户
     deletebtn(row) {
@@ -259,6 +319,7 @@ export default {
 
 <style lang="scss" scoped>
 .app-container {
+
   .bar {
     width: 100%;
     padding: 10px;
@@ -272,4 +333,29 @@ export default {
     }
   }
 }
+
+  .avatar-uploader  {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    line-height: 1;
+  }
+  .avatar-uploader:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 100px;
+    height: 100px;
+    line-height: 100px;
+    text-align: center;
+  }
+  .avatar {
+    width: 100px;
+    height: 100px;
+    display: block;
+  }
 </style>

@@ -60,3 +60,16 @@ export function delUser(id) {
     params: { id }
   })
 }
+export function getCount() {
+  return request({
+    url: '/api/User/getCount',
+    method: 'get'
+  })
+}
+export function getPageUser(page, size) {
+  return request({
+    url: '/api/User/getPageUser',
+    method: 'get',
+    params: { page, size }
+  })
+}
