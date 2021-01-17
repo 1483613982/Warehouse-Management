@@ -82,14 +82,14 @@ export const constantRoutes = [
     meta: { title: '仓库管理', icon: 'warehouse' },
     children: [
       {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/warehouse/index'),
+        path: 'shelves',
+        name: 'Shelves',
+        component: () => import('@/views/warehouse/shelves'),
         meta: { title: '货架管理', icon: 'frame' }
       },
       {
-        path: 'tree',
-        name: 'Tree',
+        path: 'goods',
+        name: 'Goods',
         component: () => import('@/views/tree/index'),
         meta: { title: '商品管理', icon: 'goods' }
       },
