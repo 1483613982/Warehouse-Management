@@ -47,12 +47,14 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     redirect: '/dashboard',
-    children: [{
-      path: 'dashboard',
-      name: 'Dashboard',
-      component: () => import('@/views/dashboard/index'),
-      meta: { title: '首页', icon: 'dashboard' }
-    }]
+    children: [
+      {
+        path: 'dashboard',
+        name: 'Dashboard',
+        component: () => import('@/views/dashboard/index'),
+        meta: { title: '首页', icon: 'dashboard' }
+      }
+    ]
   },
   {
     path: '/base',
@@ -90,26 +92,20 @@ export const constantRoutes = [
       {
         path: 'goods',
         name: 'Goods',
-        component: () => import('@/views/tree/index'),
+        component: () => import('@/views/warehouse/goods'),
         meta: { title: '商品管理', icon: 'goods' }
       },
       {
         path: 'checkout',
         name: 'Checkout',
-        component: () => import('@/views/tree/index'),
+        component: () => import('@/views/warehouse/checkout'),
         meta: { title: '出库详情', icon: 'goods' }
       },
       {
         path: 'add',
         name: 'Add',
-        component: () => import('@/views/tree/index'),
+        component: () => import('@/views/warehouse/goodsIn'),
         meta: { title: '入库详情', icon: 'goods' }
-      },
-      {
-        path: 'stock',
-        name: 'Stock',
-        component: () => import('@/views/tree/index'),
-        meta: { title: '库存详情', icon: 'goods' }
       }
     ]
   },
@@ -122,50 +118,37 @@ export const constantRoutes = [
     meta: { title: '订单管理', icon: 'warehouse' },
     children: [
       {
-        path: 'index',
-        name: 'newOrder',
-        component: () => import('@/views/supplier/index'),
-        meta: { title: '新增订单', icon: 'form' }
+        path: 'purchase',
+        name: 'purchase',
+        component: () => import('@/views/order/purchase'),
+        meta: { title: '进货订单', icon: 'form' }
       },
       {
-        path: 'historyOrder',
-        name: 'historyOrder',
-        component: () => import('@/views/supplier/index'),
-        meta: { title: '历史订单', icon: 'form' }
-      }
-    ]
-  },
-  {
-    path: '/user',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'User',
-        component: () => import('@/views/user/index'),
-        meta: { title: '用户管理', icon: 'userManage' }
+        path: 'sale',
+        name: 'sale',
+        component: () => import('@/views/order/sale'),
+        meta: { title: '销售订单', icon: 'form' }
       }
     ]
   },
   {
     path: '/setting',
     component: Layout,
-    redirect: '/setting/index',
-    name: 'Setting',
     meta: { title: '系统管理', icon: 'warehouse' },
     children: [
       {
         path: 'index',
-        name: 'newOrder',
-        component: () => import('@/views/supplier/index'),
-        meta: { title: '新增订单', icon: 'form' }
+        name: 'User',
+        component: () => import('@/views/user/index'),
+        meta: { title: '用户管理', icon: 'userManage' }
       },
       {
-        path: 'historyOrder',
-        name: 'historyOrder',
-        component: () => import('@/views/supplier/index'),
-        meta: { title: '历史订单', icon: 'form' }
+        path: 'notice',
+        name: 'notice',
+        component: () => import('@/views/setting/notice'),
+        meta: { title: '公告管理', icon: 'warehouse' }
       }
+
     ]
   },
   // 404 page must be placed at the end !!!
@@ -173,7 +156,7 @@ export const constantRoutes = [
 ]
 
 const createRouter = () => new Router({
-  // mode: 'history', // require service support
+  mode: 'hash', // require service support
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
 })

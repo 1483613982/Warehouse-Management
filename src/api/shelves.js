@@ -46,3 +46,10 @@ export function searchShelves(s_number) {
     params: { s_number }
   })
 }
+
+export function getAllShelves() {
+  return request({
+    url: 'api/Shelves/getAllShelves',
+    method: 'get'
+  })
+}

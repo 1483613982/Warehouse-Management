@@ -15,12 +15,13 @@
         </template>
       </el-table-column>
       <el-table-column prop="username" label="用户名" width="180" />
+      <el-table-column prop="usernick" label="用户昵称" width="180" />
       <el-table-column prop="rank" label="权限" width="180" :formatter="rankFormatter" />
       <el-table-column prop="create_time" label="创建时间" width="180" :formatter="dateFormatter" />
       <el-table-column prop="update_time" label="修改时间" min-width="180" :formatter="dateFormatter" />
       <el-table-column fixed="right" label="操作" width="200">
         <template slot-scope="scope">
-          <el-button type="primary" plain size="small" @click="editbtn(scope.$index, scope.row)">编辑</el-button>
+          <el-button type="primary" plain size="small" @click="editbtn( scope.row)">编辑</el-button>
           <el-button
             :disabled="scope.row.rank == '0' ?true:false"
             type="danger"
@@ -40,63 +41,16 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
-    <el-dialog title="编辑" :visible.sync="editVisible" width="50%">
-      <div class="edit-box">
-        <el-form ref="form" class="el-form" :model="user" label-width="80px">
-          <div class="el-form-block">
-            <el-form-item label="用户头像" class="el-form-inline">
-              <el-upload
-                class="avatar-uploader"
-                :headers="{'token':token}"
-                action="http://localhost:8080/imgUpload"
-                :show-file-list="false"
-                :on-success="handleAvatarSuccess"
-                :before-upload="beforeAvatarUpload"
-              >
-                <img v-if="user.avatar" :src="user.avatar" class="avatar">
-                <i v-else class="el-icon-plus avatar-uploader-icon" />
-              </el-upload>
-            </el-form-item>
-          </div>
-          <div class="el-form-block">
-            <el-form-item label="用户编号" class="el-form-inline">
-              <el-input v-model="user.id" readonly="readonly" />
-            </el-form-item>
-            <el-form-item label="权限等级" class="el-form-inline">
-              <el-select
-                v-model="user.rank"
-                placeholder="请选择"
-                :disabled="user.rank === '0' ? true:false"
-              >
-                <el-option label="超级管理员" value="0" disabled />
-                <el-option label="管理员" value="1" />
-                <el-option label="用户" value="2" />
-              </el-select>
-            </el-form-item>
-          </div>
-          <div class="el-form-block">
-            <el-form-item label="用户名" class="el-form-inline">
-              <el-input v-model="user.username" />
-            </el-form-item>
-            <el-form-item label="密码" class="el-form-inline">
-              <el-input v-model="user.password" :disabled="user.password == '密码不可查看'?true:false" />
-            </el-form-item>
-          </div>
-        </el-form>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="cancel">取 消</el-button>
-        <el-button v-if="dialogType == 'edit'" type="primary" @click="saveedit">保存修改</el-button>
-        <el-button v-else type="primary" @click="saveuser">添加</el-button>
-      </span>
-    </el-dialog>
+    <user-info :show="editVisible" :user-item="user" @close="closeDialog" />
   </div>
 </template>
 
 <script>
-import { getPageUser, updateUser, addUser, delUser, findUser, getCount } from '@/api/user'
-import { getToken } from '@/utils/auth'
+import { getPageUser, delUser, findUser, getCount } from '@/api/user'
+
+import userInfo from './components/userInfo.vue'
 export default {
+  components: { userInfo },
   data() {
     return {
       userList: [],
@@ -107,14 +61,12 @@ export default {
       total: 0,
       currentPage: 1,
       pageSize: 10,
-      token: getToken(),
       tableHeight: 0
-
     }
   },
   created() {
     this.tableHeight = document.documentElement.clientHeight - 200
-    getCount().then(res => {
+    getCount().then((res) => {
       if (res.code === 200) {
         this.total = res.data
       }
@@ -143,15 +95,6 @@ export default {
         return ''
       }
     },
-    // 头像格式化
-    avatarFormatter(row, column) {
-      const url = row.avatar
-      const imghtml =
-        "<el-image style='width: 100px; height: 100px' :src=" +
-        url +
-        " :fit='fit'></el-image>"
-      return imghtml
-    },
     // 事件格式化
     dateFormatter(row, column) {
       if (column.property === 'create_time') {
@@ -169,64 +112,19 @@ export default {
       this.currentPage = val
       this.getlist()
     },
+    closeDialog(show) {
+      this.getlist()
+      this.editVisible = show
+    },
     // 编辑按钮点击事件
-    editbtn(index, row) {
-      console.log(index, row)
-      this.editVisible = true
+    editbtn(row) {
       this.user = row
       this.dialogType = 'edit'
       this.user.password = '密码不可查看'
-    },
-    // 上传图片
-    handleAvatarSuccess(res, file) {
-      console.log(res, file)
-      if (res.code === 200) {
-        this.user.avatar = res.data
-      } else {
-        this.$message({
-          showClose: true,
-          message: res.data,
-          type: 'error'
-        })
-      }
+      // console.log(index, row)
+      this.editVisible = true
     },
 
-    beforeAvatarUpload(file) {
-      console.log(file)
-    },
-    cancel() {
-      this.editVisible = false
-      this.getlist()
-    },
-    // 保存编辑
-    saveedit() {
-      this.$confirm('是否保存修改?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          updateUser(this.user).then((res) => {
-            console.log(res)
-            if (res.code === 200) {
-              this.$message({
-                type: 'success',
-                message: '保存成功!'
-              })
-              this.editVisible = false
-              this.getlist()
-            } else {
-              this.$message({
-                type: 'error',
-                message: '保存失败!'
-              })
-            }
-          })
-        })
-        .catch(() => {
-          this.getlist()
-        })
-    },
     // 删除用户
     deletebtn(row) {
       console.log(row.id)
@@ -260,7 +158,6 @@ export default {
       this.user = {
         avatar: '',
         create_time: '',
-        id: 0,
         password: '',
         rank: '',
         update_time: '',
@@ -269,34 +166,7 @@ export default {
       this.editVisible = true
       this.dialogType = 'add'
     },
-    // 保存添加用户
-    saveuser() {
-      const params = {
-        avatar: this.user.avatar,
-        create_time: this.$moment().unix(),
-        id: 0,
-        password: this.$md5(this.user.password),
-        rank: this.user.rank,
-        update_time: this.$moment().unix(),
-        username: this.user.username
-      }
-      addUser(params).then((res) => {
-        console.log(res)
-        if (res.code === 200) {
-          this.$message({
-            type: 'success',
-            message: '添加成功!'
-          })
-          this.getlist()
-          this.editVisible = false
-        } else {
-          this.$message({
-            type: 'error',
-            message: '添加失败'
-          })
-        }
-      })
-    },
+
     // 搜索用户
     search() {
       if (this.searchKey.trim() === '') {
@@ -319,7 +189,6 @@ export default {
 
 <style lang="scss" scoped>
 .app-container {
-
   .bar {
     width: 100%;
     padding: 10px;
@@ -334,28 +203,4 @@ export default {
   }
 }
 
-  .avatar-uploader  {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    line-height: 1;
-  }
-  .avatar-uploader:hover {
-    border-color: #409EFF;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 100px;
-    height: 100px;
-    line-height: 100px;
-    text-align: center;
-  }
-  .avatar {
-    width: 100px;
-    height: 100px;
-    display: block;
-  }
 </style>

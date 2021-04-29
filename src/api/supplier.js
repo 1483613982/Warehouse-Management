@@ -14,6 +14,12 @@ export function getSupplierCount() {
     method: 'get'
   })
 }
+export function getAllSuppler() {
+  return request({
+    url: 'api/Supplier/getAllSuppler',
+    method: 'get'
+  })
+}
 export function addSupplier(data) {
   return request({
     url: 'api/Supplier/addSupplier',

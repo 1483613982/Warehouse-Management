@@ -12,7 +12,7 @@
       <el-table-column prop="s_number" label="货架编号" width="180" />
       <el-table-column prop="s_layer" label="货架层数" width="180" />
       <el-table-column prop="s_column" label="货架列数" width="180" />
-      <el-table-column prop="s_outside" label="货架面数" width="180" />
+      <el-table-column prop="s_outside" label="货架面数" width="180" :formatter="outsideFormatter" />
       <el-table-column prop="createtime" label="创建时间" min-width="180" :formatter="dateFormatter" />
       <el-table-column prop="updatetime" label="更新时间" min-width="180" :formatter="dateFormatter" />
       <el-table-column fixed="right" label="操作" width="200">
@@ -52,8 +52,8 @@
           <el-form-item label="货架面" class="el-form-inline">
             <!-- <el-input v-model="shelves.s_outside" placeholder="请输入货架面数（1/2）" /> -->
             <el-select v-model="shelves.s_outside" placeholder="请选择">
-              <el-option value="单面">单面</el-option>
-              <el-option value="双面">双面</el-option>
+              <el-option value="1" label="单面" />
+              <el-option value="2" label="双面" />
             </el-select>
           </el-form-item>
         </div>
@@ -117,6 +117,14 @@ export default {
         return this.$moment(row.createtime * 1000).format('YYYY-MM-DD HH:mm:ss')
       } else if (column.property === 'updatetime') {
         return this.$moment(row.updatetime * 1000).format('YYYY-MM-DD HH:mm:ss')
+      }
+    },
+    outsideFormatter(row, column) {
+      var outside = row.s_outside
+      if (outside === '1') {
+        return '单面'
+      } else if (outside === '2') {
+        return '双面'
       }
     },
     edit(index, row) {

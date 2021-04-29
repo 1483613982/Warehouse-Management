@@ -21,6 +21,12 @@ Vue.prototype.$md5 = md5
 import moment from 'moment' // 时间处理函数
 Vue.prototype.$moment = moment
 
+// 全局filter
+Vue.filter('moment', (value, formatString) => {
+  formatString = formatString || 'YYYY-MM-DD HH:mm:ss'
+  // return moment(value).format(formatString)
+  return moment.unix(value).format(formatString) // 这是时间戳转时间
+})
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api

@@ -5,7 +5,7 @@
         <el-input v-model="searchKey" placeholder="请输入内容" clearable />
       </div>
       <el-button type="primary" @click="search">搜索</el-button>
-      <el-button type="primary" @click="editVisible = true;edittype = 'add'">添加供应商</el-button>
+      <el-button type="primary" @click="editVisible = true;edittype = 'add';supplier= {}">添加供应商</el-button>
     </div>
     <el-table :data="supplierList" style="width: 100%" border :height="tableHeight">
       <el-table-column prop="id" label="编号" width="100" />
@@ -21,8 +21,8 @@
       <el-table-column prop="fax" label="传真" width="180" />
       <el-table-column prop="state" label="状态" min-width="180">
         <template slot-scope="scope">
-          <el-tag v-if="scope.row.state === 0">可用</el-tag>
-          <el-tag v-else-if="scope.row.state === 1" type="danger">不可用</el-tag>
+          <el-tag v-if="scope.row.state === '可用'">可用</el-tag>
+          <el-tag v-else-if="scope.row.state === '不可用'" type="danger">不可用</el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="createtime" label="创建时间" min-width="180" :formatter="dateFormatter" />
@@ -49,7 +49,7 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
-    <el-dialog title="编辑供应商" :visible.sync="editVisible" width="60%">
+    <el-dialog title="编辑供应商" :visible.sync="editVisible" width="70%">
       <el-form label-width="100px" :model="supplier">
         <div class="el-form-block">
           <el-form-item label="供应商名称" class="el-form-inline">
@@ -79,6 +79,13 @@
           </el-form-item>
           <el-form-item label="银行卡号" class="el-form-inline">
             <el-input v-model="supplier.banknumber" placeholder="请输入银行卡号" />
+          </el-form-item>
+          <el-form-item label="状态" class="el-form-inline">
+            <!-- <el-input v-model="supplier.state" placeholder="请输入状态" /> -->
+            <el-select v-model="supplier.state" placeholder="请选择">
+              <el-option label="可用" value="可用" />
+              <el-option label="不可用" value="不可用" />
+            </el-select>
           </el-form-item>
         </div>
         <div class="el-form-block">
@@ -156,7 +163,7 @@ export default {
       ) {
         this.getSupplier()
       } else {
-        searchSupplier(this.searchKey).then(res => {
+        searchSupplier(this.searchKey).then((res) => {
           if (res.code === 200) {
             this.supplierList = res.data
           } else {

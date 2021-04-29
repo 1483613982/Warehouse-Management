@@ -1,9 +1,9 @@
-import request from '@/utils/request'
+// import request from '@/utils/request'
 
-export function imgUpload(params) {
-  return request({
-    url: '/vue-admin-template/table/list',
-    method: 'get',
-    params
-  })
+const uploadApi = process.env.VUE_APP_BASE_API
+
+const upload = {
+  uploadUrl: uploadApi + 'imgUpload'
 }
+
+export default upload
